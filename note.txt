@@ -1,0 +1,8 @@
+short term:
+check user availabke balance
+
+
+
+
+future todo:
+deposit history via new schema

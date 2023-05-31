@@ -5,6 +5,7 @@ const db =require('./db');
 
 const Router = require("./Routes/routes");
 const authRouter = require("./Routes/authRoutes");
+const stockRoute = require("./Routes/stockRoute");
 const app = express()
 const port = process.env.port ||  2000;
 db()
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(Router);
 app.use(authRouter);
+app.use(stockRoute);
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })

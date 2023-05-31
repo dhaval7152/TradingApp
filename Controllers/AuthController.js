@@ -13,7 +13,7 @@ exports.registerUser=async(req,res)=>{
 
     try {
         
-        const {username,password,email} =req.body;
+        const {username,password,email,balance} =req.body;
         if(!username || !password){
             return res.status(200).json({
                 status:"fail",
@@ -40,7 +40,12 @@ exports.registerUser=async(req,res)=>{
         const salt= await bcrypt.genSalt(10);
         const hashedPassword=await bcrypt.hash(password,salt);
         
-        const newUser= new userModal({username,password:hashedPassword,email:email});
+        const newUser= new userModal({
+            username,
+            password:hashedPassword,
+            email:email,
+            balance:balance
+        });
         const savedUser=await newUser.save();
         res.status(201).json(savedUser);
 

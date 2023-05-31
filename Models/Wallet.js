@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 const {Schema} = require("mongoose");
 
 
-const userSchema = new Schema({
-  userId: {
-    type:Number,
+const WalletSchema = new Schema({
+  username: {
+    type:String,
     required: true,
     unique:true,
-
   },
   upi: String,
   deposit: Number,
@@ -21,4 +20,4 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Wallet", userSchema);
+module.exports = mongoose.model("Wallet", WalletSchema);

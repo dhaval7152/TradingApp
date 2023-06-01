@@ -3,12 +3,12 @@ const {Schema} = require("mongoose");
 
 
 const stockSchema = new Schema({
-  stockId: {
-    type:Number,
+  coinsyml: {
+    type:String,
     unique:true,
     required: true
   },
-  StockName: {
+  CoinkName: {
     type:String,
     unique:true,
     required: true
@@ -16,6 +16,10 @@ const stockSchema = new Schema({
   price:{
     type:Number,
     required:true
+  },
+  Listing_Quantity: {
+    type: Number,
+    required: true,
   },
   Quantity: {
     type: Number,

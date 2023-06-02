@@ -39,19 +39,19 @@ module.exports = {
 
     let trackQunt= await stockController.findOne({coinsyml:coinsyml});
     let trackChange=trackQunt.Quantity;
-    console.log("🚀 ---------------------------------------------🚀")
-    console.log("🚀 ~ stockTracker: ~ trackChange:", trackChange)
-    console.log("🚀 ---------------------------------------------🚀")
+    // console.log("🚀 ---------------------------------------------🚀")
+    // console.log("🚀 ~ stockTracker: ~ trackChange:", trackChange)
+    // console.log("🚀 ---------------------------------------------🚀")
 
     let calculation=ListingQunt-trackChange;
-    console.log("🚀 ---------------------------------------------🚀")
-    console.log("🚀 ~ stockTracker: ~ calculation:", calculation)
-    console.log("🚀 ---------------------------------------------🚀")
+    // console.log("🚀 ---------------------------------------------🚀")
+    // console.log("🚀 ~ stockTracker: ~ calculation:", calculation)
+    // console.log("🚀 ---------------------------------------------🚀")
 
 
    
   //     res.send(addStock);
-    res.send({calculation})
+    res.send({ListingQunt,calculation})
 
    
   },

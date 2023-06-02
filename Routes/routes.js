@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 const router = express.Router();
 
-const DataController = require("../Controllers/MainController");
+const WalletController = require("../Controllers/WalletController");
 
 // router.post("/signUp", DataController.signUP);
-router.post("/deposit", DataController.deposit);
-router.post("/withdraw", DataController.withdraw);
+router.post("/deposit", WalletController.deposit);
+router.post("/withdraw", WalletController.withdraw);
 
 module.exports = router;

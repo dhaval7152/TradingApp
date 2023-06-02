@@ -78,33 +78,46 @@ setInterval(() => {
         console.log("🚀 ~ stockTracker ~ ChangedQuntity:", ChangedQuntity)
         console.log("🚀 --------------------------------------------------🚀")
        
-        return ChangedQuntity;
+        let listQunt=ChangedQuntity.ListingQunt
+        let quantityChange=ChangedQuntity.calculation
+        // let listQunt=100
+        // let quantityChange=2
+        function adjustPrice(listQunt, quantityChange) {
+          const priceChangeFactor = 0.001; // Change this factor as desired
+          
+          // Calculate the new quantity and adjust the price accordingly
+          if(quantityChange - listQunt  < 0 ){
+            console.log("logic:",quantityChange - listQunt );
+            const newQuantity = listQunt + quantityChange;
+            const priceAdjustment = priceChangeFactor * quantityChange ;
+            const newPrice = 1 * (1 - priceAdjustment);
+            console.log("🚀 -------------------------------------🚀")
+            console.log("🚀 ~ adjustPrice ~ newPrice:", newPrice)
+            console.log("🚀 -------------------------------------🚀")
+
+          }
+         
+          
+          // Update the stock data
+          // stockData.Quantity = newQuantity;
+          // stockData.price = newPrice;
+          
+          // // Log the updated stock data
+          // console.log("Updated stock data:");
+          // console.log(stockData);
+        }
+        adjustPrice(listQunt,quantityChange)
+
        
   };
-  stockTracker()
+  // stockTracker()
 
   // Original stock data
 
 // Function to adjust the price based on stock quantity
-function adjustPrice(stockData, quantityChange) {
-  const priceChangeFactor = 5; // Change this factor as desired
-  
-  // Calculate the new quantity and adjust the price accordingly
-  const newQuantity = stockData.Quantity + quantityChange;
-  const priceAdjustment = priceChangeFactor * quantityChange;
-  const newPrice = stockData.price * (1 - priceAdjustment);
-  
-  // Update the stock data
-  stockData.Quantity = newQuantity;
-  stockData.price = newPrice;
-  
-  // Log the updated stock data
-  console.log("Updated stock data:");
-  console.log(stockData);
-}
+
 
 // Example usage: increasing the quantity by 500
-adjustPrice(stockData, );
 
 
   
@@ -113,3 +126,23 @@ adjustPrice(stockData, );
 app.listen(port, () => {
   console.log(`Backend http://localhost:${port}`)
 })
+
+
+
+
+// function adjustPrice(listQunt, quantityChange) {
+//   const priceChangeFactor = 5; // Change this factor as desired
+  
+//   // Calculate the new quantity and adjust the price accordingly
+//   const newQuantity = stockData.Quantity + quantityChange;
+//   const priceAdjustment = priceChangeFactor * quantityChange;
+//   const newPrice = stockData.price * (1 - priceAdjustment);
+  
+//   // Update the stock data
+//   stockData.Quantity = newQuantity;
+//   stockData.price = newPrice;
+  
+//   // Log the updated stock data
+//   console.log("Updated stock data:");
+//   console.log(stockData);
+// }

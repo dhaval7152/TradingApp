@@ -96,3 +96,27 @@ exports.loginUser = async (req, res) => {
       return errorMessage(res, error);
     }
   };
+
+
+  exports.validate = async (req, res) => {
+    try {
+      const token = req.header("x-auth-token");
+      if (!token) {
+        return res.json(false);
+      }
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      if (!verified) {
+        return res.json(false);
+      }
+  
+      const user = await userModal.findById(verified.id);
+      if (!user) {
+        return res.json(false);
+      }
+      console.log(user);
+      // return res.json(true);
+      return res.send({"username":user.username,"status":true})
+    } catch (error) {
+      return res.json(false);
+    }
+  };

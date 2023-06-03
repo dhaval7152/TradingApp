@@ -150,5 +150,6 @@ module.exports = {
       res.send({ status: "failed", message: "Stock not found" });
     }
 
+    // autoMatchOrder:
   },
 };

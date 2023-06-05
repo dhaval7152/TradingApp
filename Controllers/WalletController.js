@@ -17,7 +17,6 @@ module.exports = {
     console.log("🚀 ~ deposit: ~ findusername:", findusername);
     console.log("🚀 ------------------------------------------🚀");
 
-    let updateBal = findusername.balance - amount;
 
     // // if wallet user deposited already ? update : new entry
     try {
@@ -36,7 +35,7 @@ module.exports = {
       };
 
       if (amount > findusername.balance) {
-        return res.send({ status: "No Enought Money to deposit" });
+        return res.send({status:"failed",message: "No Enought Money to deposit" });
       } else if (findDeposit == null) {
         const depositData = new walletModel({
           username: findusername.username,
@@ -84,7 +83,7 @@ module.exports = {
 
       if (amount > findWithdraw.deposit) {
         console.log("hello");
-        return res.send({ status: "No Enought Money to Withdraw" });
+        return res.send({status:"failed",message: "No Enought Money to Withdraw" });
       }
       else if (findWithdraw.username) {
         const deposit = await walletModel.findOneAndUpdate(
@@ -104,58 +103,25 @@ module.exports = {
     console.log("🚀 ~ deposit: ~ findusername:", findusername);
     console.log("🚀 ------------------------------------------🚀");
   },
+
+  getUserBalance:async(req,res)=>{
+    let {username} =req.body;
+    try {
+    let findDeposit = await walletModel.findOne({ username: username });
+    console.log("🚀 ----------------------------------------------------🚀")
+    console.log("🚀 ~ getUserBalance:async ~ findDeposit:", findDeposit)
+    console.log("🚀 ----------------------------------------------------🚀")
+    if(!findDeposit){
+      return res.send({status:"failed","message":"User Not found"})
+    }
+    return res.send({balance:findDeposit.deposit})
+      
+    } catch (error) {
+      return res.send(error)
+      
+    }
+  }
 };
 
-// async (req, res) => {
-//     let data = req.body;
-//     let userId = data.username;
-//     let amount = data.amount;
 
-//     console.log("🚀 --------------------------🚀");
-//     console.log("🚀 ~ app.post ~ data:", data);
-//     console.log("🚀 --------------------------🚀");
-//     res.send(data);
 
-//     // Finded user
-//     let finduserId = await userModel.findOne({ userId: userId });
-//     // let updateBal = finduserId.balance + amount;
-
-//     // if wallet user deposited already ? update : new entry
-//     let findDeposit = await walletModel.findOne({ userId: userId });
-//     console.log("🚀 ----------------------------------------🚀");
-//     console.log("🚀 ~ deposit: ~ findDeposit:", findDeposit);
-//     console.log("🚀 ----------------------------------------🚀");
-
-//      // update the Withdraw balance
-//      const updateBalance = async (amountReduce) => {
-//         await userModel.findOneAndUpdate(
-//           { userId: userId },
-//           { balance: finduserId.balance + amountReduce },
-//           { new: true }
-//         );
-//       };
-
-//     if (amount > findDeposit.deposit) {
-//         console.log("nathi bhai paisa");
-//       }
-//     else if (findDeposit == null) {
-//       const depositData = new walletModel({
-//         userId: finduserId.userId,
-//         upi: finduserId.upi,
-//         deposit: amount,
-//       });
-//       await depositData.save();
-//       updateBalance(amount)
-//     }
-
-//     else if (findDeposit.userId) {
-//       const deposit = await walletModel.findOneAndUpdate(
-//         { userId: findDeposit.userId },
-//         { deposit: findDeposit.deposit - amount },
-//         { new: true }
-//       );
-//       updateBalance(amount)
-
-//       console.log("update");
-//     }
-// }

@@ -53,10 +53,13 @@ module.exports = {
     if(wallet[0].deposit <= 0 || Amount > wallet[0].deposit){
       return res.send({status:"failed",msg:"Please Add Funds"})
     }
+    if(stock[0].Quantity < 0 || Amount / stock[0].price > stock[0].Quantity  ){
+      return res.send({status:"failed",msg:"All Stock Sold"})
+    }
     
     else if (portfolioCheck.length > 0 ) {
       console.log("matched");
-      updateBalance(Amount)
+      updateBalance(Amount) 
       let buyUpdate = await porfolioModel.findOneAndUpdate(
         { coinsyml: coinsyml },
         {

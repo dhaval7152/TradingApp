@@ -3,7 +3,7 @@ const express = require('express')
 
 const db =require('./db');
 
-const Router = require("./Routes/routes");
+const WalletRouter = require("./Routes/WalletRoutes");
 const authRouter = require("./Routes/authRoutes");
 const stockRoute = require("./Routes/stockRoute");
 const tradeRoute = require("./Routes/tradeRoutes");
@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(Router);
+app.use(WalletRouter);
 app.use(authRouter);
 app.use(stockRoute);
 app.use(tradeRoute);

@@ -12,7 +12,7 @@ module.exports = {
       return res.send(viewAll);
     }
     else{
-      return res.send({ message: "No Stocks found" })
+      return res.send({status:"failed", message: "No Stocks found" })
     }
   },
  

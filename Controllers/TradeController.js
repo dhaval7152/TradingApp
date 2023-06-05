@@ -51,7 +51,7 @@ module.exports = {
     // how to manage quantity then ,so if Listing Quantity==max supply stop trading
 
     if(wallet[0].deposit <= 0 || Amount > wallet[0].deposit){
-      return res.send({"msg":"Please Add Funds"})
+      return res.send({status:"failed",msg:"Please Add Funds"})
     }
     
     else if (portfolioCheck.length > 0 ) {
@@ -123,7 +123,13 @@ module.exports = {
       );
     };
 
-    if (portfolioCheck.length > 0 && portfolioCheck[0].Quantity > 0) {
+    //  if (portfolioCheck[0].Quantity == 0) {
+    //   return res.send({ status: "failed", message: "No Quantity Left" });
+    // }
+     if (Amount / stock[0].price > portfolioCheck[0].Quantity) {
+      return res.send({ status: "failed", message: "No Quantity Left" });
+    }
+    else if (portfolioCheck.length > 0 &&  portfolioCheck[0].Quantity > 0) {
       updateBalance(Amount)
       console.log("matched");
 
@@ -144,9 +150,11 @@ module.exports = {
       console.log("🚀 ~ buyStock: ~ newbuyUpdate:", newsellUpdate);
       console.log("🚀 -------------------------------------------🚀");
       return res.send(newsellUpdate);
-    } else if (portfolioCheck[0].Quantity == 0) {
-      return res.send({ status: "failed", message: "No Quantity Left" });
-    } else {
+    } 
+    // else if (portfolioCheck[0].Quantity == 0) {
+    //   return res.send({ status: "failed", message: "No Quantity Left" });
+    // }
+     else {
       res.send({ status: "failed", message: "Stock not found" });
     }
 

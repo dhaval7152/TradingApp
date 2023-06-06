@@ -33,7 +33,10 @@ const userSchema = new Schema({
   //   required:true
   // },
   upi: String,
-  balance: Number,
+  balance:{
+    type:Number,
+    default: 1000,
+  },
   createdAt: {
     type: Date,
     default: () => Date.now(),

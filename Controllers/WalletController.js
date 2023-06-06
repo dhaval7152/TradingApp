@@ -48,7 +48,8 @@ module.exports = {
       } else if (findDeposit.username) {
         const deposit = await walletModel.findOneAndUpdate(
           { username: findDeposit.username },
-          { deposit: findDeposit.deposit + amount },
+          { deposit: findDeposit.deposit + amount ,
+            upi: findusername.upi},
           { new: true }
         );
         updateBalance(amount);
@@ -108,13 +109,14 @@ module.exports = {
     let {username} =req.body;
     try {
     let findDeposit = await walletModel.findOne({ username: username });
+    let findUPI = await userModel.findOne({ username: username });
     console.log("🚀 ----------------------------------------------------🚀")
     console.log("🚀 ~ getUserBalance:async ~ findDeposit:", findDeposit)
     console.log("🚀 ----------------------------------------------------🚀")
     if(!findDeposit){
       return res.send({status:"failed","message":"User Not found"})
     }
-    return res.send({balance:findDeposit.deposit})
+    return res.send({upi:findUPI.upi,balance:findDeposit.deposit})
       
     } catch (error) {
       return res.send(error)

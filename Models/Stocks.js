@@ -14,7 +14,7 @@ const stockSchema = new Schema({
     required: true
   },
   price:{
-    type:Number,
+    type:Number, //Decimal128
     required:true
   },
   Listing_Quantity: {

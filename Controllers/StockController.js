@@ -55,4 +55,50 @@ module.exports = {
 
    
   },
+  fetchStockData: async (req, res) => {
+    let {coinsyml} = req.body;
+    const coin = await stockController.findOne({coinsyml:coinsyml})
+
+    // let marketCap= coin.price * coin.Quantity;
+    // let price= marketCap / coin.Quantity;
+
+    // BTC example
+    let marketCap= 25767.50 * 19394143;
+    let price= marketCap / 19394143;
+
+
+    console.log("🚀 -----------------------------------🚀")
+    console.log("🚀 ~ fetchStockData: ~ price:", price)
+    console.log("🚀 -----------------------------------🚀")
+    console.log("🚀 -------------------------------------------🚀")
+    console.log("🚀 ~ fetchStockData: ~ marketCap:", marketCap)
+    console.log("🚀 -------------------------------------------🚀")
+    console.log("🚀 ---------------------------------------------------🚀")
+    console.log("🚀 ~ fetchStockData: ~ coin.Quantity:", coin.Quantity)
+    console.log("🚀 ---------------------------------------------------🚀")
+    res.send({marketCap,price})
+  
+    
+    
+
+  //   const ListingQunt=Qunt.Listing_Quantity;
+
+  //   let trackQunt= await stockController.findOne({coinsyml:coinsyml});
+  //   let trackChange=trackQunt.Quantity;
+  //   // console.log("🚀 ---------------------------------------------🚀")
+  //   // console.log("🚀 ~ stockTracker: ~ trackChange:", trackChange)
+  //   // console.log("🚀 ---------------------------------------------🚀")
+
+  //   let calculation=ListingQunt-trackChange;
+  //   // console.log("🚀 ---------------------------------------------🚀")
+  //   // console.log("🚀 ~ stockTracker: ~ calculation:", calculation)
+  //   // console.log("🚀 ---------------------------------------------🚀")
+
+
+   
+  // //     res.send(addStock);
+    // res.send({ListingQunt,calculation})
+
+   
+  },
 };

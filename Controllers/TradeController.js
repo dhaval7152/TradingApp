@@ -53,6 +53,8 @@ module.exports = {
     if(wallet[0].deposit <= 0 || Amount > wallet[0].deposit){
       return res.send({status:"failed",msg:"Please Add Funds"})
     }
+
+    // Use OG
     if(stock[0].Quantity < 0 || Amount / stock[0].price > stock[0].Quantity  ){
       return res.send({status:"failed",msg:"All Stock Sold"})
     }

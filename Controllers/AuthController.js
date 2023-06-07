@@ -107,7 +107,7 @@ exports.validate = async (req, res) => {
     if (!user) {
       return res.json(false);
     }
-    console.log(user);
+    // console.log(user);
     // return res.json(true);
     return res.send({ username: user.username, status: true });
   } catch (error) {

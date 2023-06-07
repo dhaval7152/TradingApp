@@ -1,18 +1,16 @@
-require('dotenv').config()
-const express = require('express')
+require("dotenv").config();
+const express = require("express");
 
-const db =require('./db');
+const db = require("./db");
 
 const WalletRouter = require("./Routes/WalletRoutes");
 const authRouter = require("./Routes/authRoutes");
 const stockRoute = require("./Routes/stockRoute");
 const tradeRoute = require("./Routes/tradeRoutes");
 const portfolioRoute = require("./Routes/portfolioRoutes");
-const app = express()
-const port = process.env.port ||  2000;
-db()
-
-
+const app = express();
+const port = process.env.port || 2000;
+db();
 
 const cors = require("cors");
 app.use(cors());
@@ -24,41 +22,41 @@ app.use(authRouter);
 app.use(stockRoute);
 app.use(tradeRoute);
 app.use(portfolioRoute);
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-app.post('/send', async (req, res) => {
-    let data = req.body;
-    console.log("🚀 --------------------------🚀");
-    console.log("🚀 ~ app.post ~ data:", data);
-    console.log("🚀 --------------------------🚀");
-    res.send(data);
-})
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+app.post("/send", async (req, res) => {
+  let data = req.body;
+  console.log("🚀 --------------------------🚀");
+  console.log("🚀 ~ app.post ~ data:", data);
+  console.log("🚀 --------------------------🚀");
+  res.send(data);
+});
 
 // setInterval(() => {
-//   const updatePrice = async (newPrice) => {
-//         const response = await fetch(`http://localhost:${port}/updatePrice`, {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({
-//           "coinsyml":"shib",
-//           "price":newPrice
-//           }),
-//         });
-//         const price =await response.json();
-//         console.log("🚀 -------------------------------🚀")
-//         console.log("🚀 ~ updatePrice ~ price:", price)
-//         console.log("🚀 -------------------------------🚀")
-       
-//   };
+  const updatePrice = async (newPrice) => {
+        const response = await fetch(`http://localhost:${port}/updatePrice`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+          "coinsyml":"xrp",
+          "price":newPrice
+          }),
+        });
+        const price =await response.json();
+        console.log("🚀 -------------------------------🚀")
+        console.log("🚀 ~ updatePrice ~ price:", price)
+        console.log("🚀 -------------------------------🚀")
+
+  };
 //   console.log("price change");
 
 //  const stockTracker = async () => {
 
 //       console.log("hitting api");
-  
+
 //         const response = await fetch(`http://localhost:${port}/stockTracker`, {
 //           method: "POST",
 //           headers: {
@@ -72,14 +70,14 @@ app.post('/send', async (req, res) => {
 //         console.log("🚀 --------------------------------------------------🚀")
 //         console.log("🚀 ~ stockTracker ~ ChangedQuntity:", ChangedQuntity)
 //         console.log("🚀 --------------------------------------------------🚀")
-       
+
 //         let listQunt=ChangedQuntity.ListingQunt
 //         let quantityChange=ChangedQuntity.calculation
 //         // let listQunt=100
 //         // let quantityChange=2
 //         function adjustPrice(listQunt, quantityChange) {
 //           const priceChangeFactor = 0.001; // Change this factor as desired
-          
+
 //           // Calculate the new quantity and adjust the price accordingly
 //           if(quantityChange - listQunt  < 0 ){
 //             console.log("logic:",quantityChange - listQunt );
@@ -93,19 +91,17 @@ app.post('/send', async (req, res) => {
 //             console.log("🚀 -------------------------------------🚀")
 
 //           }
-         
-          
+
 //           // Update the stock data
 //           // stockData.Quantity = newQuantity;
 //           // stockData.price = newPrice;
-          
+
 //           // // Log the updated stock data
 //           // console.log("Updated stock data:");
 //           // console.log(stockData);
 //         }
 //         adjustPrice(listQunt,quantityChange)
 
-       
 //   };
 //   // stockTracker()
 
@@ -113,41 +109,91 @@ app.post('/send', async (req, res) => {
 
 //   const marketCap=async()=>{
 
-
-
 //   }
-
-
-
 
 // // Function to adjust the price based on stock quantity
 
-
 // // Example usage: increasing the quantity by 500
 
-
-  
 // }, 3000);
+setInterval(
+  async () => {
+    let Pricevalue = Math.floor(Math.random() * (300 - 250 + 1)) + 250;
+    insertAskBid = async () => {
+      console.log("🚀 -----------------------------------------🚀");
+      console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
+      console.log("🚀 -----------------------------------------🚀");
+      const response = await fetch(`http://localhost:${port}/limitOrder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderType: "Ask",
+          coinsyml: "xrp",
+          price: Pricevalue,
+        }),
+      });
+      const price = await response.json();
+    };
+    insertBid = async () => {
+      console.log("🚀 -----------------------------------------🚀");
+      console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
+      console.log("🚀 -----------------------------------------🚀");
+      const response = await fetch(`http://localhost:${port}/limitOrder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderType: "Bid",
+          coinsyml: "xrp",
+          price: Pricevalue,
+        }),
+      });
+      const price = await response.json();
+    };
+    // Pricevalue -= 1;
+
+    // insertAskBid()
+    // insertBid()
+  },
+
+  200
+);
+setInterval(() => {
+  const askBid = async () => {
+    const response = await fetch(`http://localhost:${port}/viewOrder`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const price = await response.json();
+    console.log("🚀 -------------------------------🚀");
+    console.log("🚀 ~ setInterval ~ price:", price);
+    console.log("🚀 -------------------------------🚀");
+    updatePrice(price.newPrice)
+  };  
+  // askBid()
+}, 1900);
 
 app.listen(port, () => {
-  console.log(`Backend http://localhost:${port}`)
-})
-
-
-
+  console.log(`Backend http://localhost:${port}`);
+});
 
 // function adjustPrice(listQunt, quantityChange) {
 //   const priceChangeFactor = 5; // Change this factor as desired
-  
+
 //   // Calculate the new quantity and adjust the price accordingly
 //   const newQuantity = stockData.Quantity + quantityChange;
 //   const priceAdjustment = priceChangeFactor * quantityChange;
 //   const newPrice = stockData.price * (1 - priceAdjustment);
-  
+
 //   // Update the stock data
 //   stockData.Quantity = newQuantity;
 //   stockData.price = newPrice;
-  
+
 //   // Log the updated stock data
 //   console.log("Updated stock data:");
 //   console.log(stockData);

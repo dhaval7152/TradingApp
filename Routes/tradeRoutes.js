@@ -7,5 +7,9 @@ const tradeContoller = require("../Controllers/TradeController");
 router.post("/viewStocks", tradeContoller.viewStocks);
 router.post("/buyStock", tradeContoller.buyStock);
 router.post("/sellStock", tradeContoller.sellStock);
+router.post("/limitOrder", tradeContoller.limitOrder);
+router.post("/viewOrder", tradeContoller.viewOrder);
+router.post("/MatchOrder", tradeContoller.MatchOrder);
+
 
 module.exports = router;

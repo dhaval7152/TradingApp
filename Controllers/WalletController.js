@@ -110,9 +110,9 @@ module.exports = {
     try {
     let findDeposit = await walletModel.findOne({ username: username });
     let findUPI = await userModel.findOne({ username: username });
-    console.log("🚀 ----------------------------------------------------🚀")
-    console.log("🚀 ~ getUserBalance:async ~ findDeposit:", findDeposit)
-    console.log("🚀 ----------------------------------------------------🚀")
+    // console.log("🚀 ----------------------------------------------------🚀")
+    // console.log("🚀 ~ getUserBalance:async ~ findDeposit:", findDeposit)
+    // console.log("🚀 ----------------------------------------------------🚀")
     if(!findDeposit){
       return res.send({status:"failed","message":"User Not found"})
     }

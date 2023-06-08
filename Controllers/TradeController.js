@@ -5,70 +5,81 @@ const porfolioModel = require("../Models/portfolio");
 const userModel = require("../Models/User");
 const limitOrder = require("../Models/LimitOrders");
 
-const host="http://localhost:5000";
-const buyStockApi=async(data)=>{
+const host = "http://localhost:5000";
+const buyStockApi = async (data) => {
   console.log("calling buyStockApi");
   console.log(data.Amount);
-    const response = await fetch(`${host}/buyStock`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // Provide all values to registerUser
-      body: JSON.stringify(data),
-    });
-    const res=await response.json();
-    console.log("🚀 -------------------🚀")
-    console.log("🚀 ~ buy ~ res:", res)
-    console.log("🚀 -------------------🚀")
-   
+  const response = await fetch(`${host}/buyStock`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // Provide all values to registerUser
+    body: JSON.stringify(data),
+  });
+  const res = await response.json();
+  console.log("🚀 -------------------🚀");
+  console.log("🚀 ~ buy ~ res:", res);
+  console.log("🚀 -------------------🚀");
 
-    if (res.status === "failed") {
-      // alert(res.msg)
-      console.log("res.msg");
+  if (res.status === "failed") {
+    // alert(res.msg)
+    console.log("res.msg");
 
+    // setUsernameError(res.message);
+    // setPasswordError(res.message);
+  } else {
+    // alert("BUyed")
+    console.log("Buyed");
+    // setUserData(res);
+    // localStorage.setItem("auth-token", res.token);
+    // navigate("/");
+  }
+};
 
-      // setUsernameError(res.message);
-      // setPasswordError(res.message);
+const sellStockApi = async (data) => {
+  console.log("calling sellStockApi");
+  const response = await fetch(`${host}/sellStock`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // Provide all values to registerUser
+    body: JSON.stringify(data),
+  });
+  const res = await response.json();
+  console.log("🚀 -------------------🚀");
+  console.log("🚀 ~ buy ~ res:", res);
+  console.log("🚀 -------------------🚀");
 
-    } else {
-      // alert("BUyed")
-      console.log("Buyed");
-      // setUserData(res);
-      // localStorage.setItem("auth-token", res.token);
-      // navigate("/");
-    }
-  };
+  if (res.status === "failed") {
+    console.log(res.message);
+    // setUsernameError(res.message);
+    // setPasswordError(res.message);
+  } else {
+    console.log("sold");
+    // setUserData(res);
+    // localStorage.setItem("auth-token", res.token);
+    // navigate("/");
+  }
+};
 
-  const sellStockApi=async(data)=>{
-    
-    console.log("calling sellStockApi");
-      const response = await fetch(`${host}/sellStock`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Provide all values to registerUser
-        body: JSON.stringify(data),
-      });
-      const res=await response.json();
-      console.log("🚀 -------------------🚀")
-      console.log("🚀 ~ buy ~ res:", res)
-      console.log("🚀 -------------------🚀")
-     
-
-      if (res.status === "failed") {
-        console.log(res.message);
-        // setUsernameError(res.message);
-        // setPasswordError(res.message);
-
-      } else {
-        console.log("sold");
-        // setUserData(res);
-        // localStorage.setItem("auth-token", res.token);
-        // navigate("/");
-      }
-    };
+const updatePrice = async (newPrice) => {
+  const response = await fetch(`${host}/updatePrice`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      coinsyml: "xrp",
+      price: newPrice,
+    }),
+  });
+  const price = await response.json();
+  console.log("🚀 -------------------------------🚀");
+  console.log("🚀 ~ updatePrice ~ price:", price);
+  console.log("🚀 -------------------------------🚀");
+};
 module.exports = {
   viewStocks: async (req, res) => {
     let view = await stockModel.find({});
@@ -103,7 +114,7 @@ module.exports = {
         { new: true }
       );
     };
-   
+
     // how to manage quantity then ,so if Listing Quantity==max supply stop trading
 
     if (wallet[0].deposit <= 0 || Amount > wallet[0].deposit) {
@@ -235,46 +246,107 @@ module.exports = {
   viewOrder: async (req, res) => {
     // Bid=Buyer Ask=seller
     try {
+      let gerBuyOrders = await limitOrder
+        .findOne({ orderType: "Bid" })
+        .sort({ price: "descending" });
+      let gerSellOrders = await limitOrder
+        .findOne({ orderType: "Ask" })
+        .sort({ price: "descending" });
 
-   
-
-      let  gerBuyOrders=await limitOrder.findOne({orderType: "Bid"}).sort({price:"descending"})
-      let gerSellOrders = await limitOrder.findOne({ orderType: "Ask" }).sort({price:"descending"});
-       
-
-      if(gerBuyOrders.price===gerSellOrders.price){
+      if (gerBuyOrders.price === gerSellOrders.price) {
         console.log("order match");
-        console.log("set new price",gerBuyOrders.price);
+        console.log("set new price", gerBuyOrders.price);
 
-      // delete 
-      //  let placeBuy=await limitOrder.findOneAndDelete({price:gerBuyOrders.price})
-      //  let placeSell=await limitOrder.findOneAndDelete({price:gerSellOrders.price})
+        // delete
+        //  let placeBuy=await limitOrder.findOneAndDelete({price:gerBuyOrders.price})
+        //  let placeSell=await limitOrder.findOneAndDelete({price:gerSellOrders.price})
 
-      //  update quntity
-      let findBuy=await limitOrder.findOne({orderType:gerBuyOrders.orderType})
-   
-      let findSell=await limitOrder.findOne({orderType:gerSellOrders.orderType})
+        //  update quntity
+        let findBuy = await limitOrder.findOne({
+          orderType: gerBuyOrders.orderType,
+        });
+        let findSell = await limitOrder.findOne({
+          orderType: gerSellOrders.orderType,
+        });
 
+        // buyStockApi({username:"jay",coinsyml:findBuy.coinsyml,Amount:findBuy.Quantity * findBuy.price  })
 
-      buyStockApi({username:"jay",coinsyml:findBuy.coinsyml,Amount:findBuy.Quantity * findBuy.price  })
+        // // sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findSell.Quantity * findSell.price  })
 
-      // sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findSell.Quantity * findSell.price  })
+        // sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findBuy.Quantity * findBuy.price   })
 
-      sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findBuy.Quantity * findBuy.price   })
+        // updatePrice(findBuy.price)
 
-      let placeBuy=await limitOrder.findOneAndUpdate({orderType:gerBuyOrders.orderType},{Quantity:findBuy.Quantity - findBuy.Quantity}, { new: true })
+        let placeBuy = await limitOrder.findOneAndUpdate(
+          { orderType: gerBuyOrders.orderType },
+          { Quantity: findBuy.Quantity - findBuy.Quantity },
+          { new: true }
+        );
 
-      let placeSell=await limitOrder.findOneAndUpdate({orderType:gerSellOrders.orderType},{Quantity:findSell.Quantity - findBuy.Quantity}, { new: true })
+        let placeSell = await limitOrder.findOneAndUpdate(
+          { orderType: gerSellOrders.orderType },
+          { Quantity: findSell.Quantity - findBuy.Quantity },
+          { new: true }
+        );
 
+        let BidfindDelete = await limitOrder
+          .findOne({ Quantity: 0 })
+          .deleteMany();
 
-      let BidfindDelete=await limitOrder.findOne({Quantity:0}).deleteMany();
-     
-       return res.send({newPrice:gerBuyOrders.price});
+        return res.send({ newPrice: gerBuyOrders.price });
+      } else {
+        return res.send({ status: "NO matched" });
       }
-      else{
-        return res.send({status:"NO matched"})
-      }
+    } catch (error) {
+      console.log(error);
+      res.send({ status: "fail", message: error.message });
+    }
+  },
+  viewAsk: async (req, res) => {
+    // Bid=Buyer Ask=seller
+    try {
+      // let  gerBuyOrders=await limitOrder.findOne({orderType: "Bid"}).sort({price:"descending"})
+      let gerSellOrders = await limitOrder
+        .find({ orderType: "Ask" })
+        .sort({ price: "descending" });
 
+      if (gerSellOrders.length != 0) {
+        return res.send(gerSellOrders);
+      } else {
+        // return res.send({message:"NO data FOund"})
+        return res.send([
+          {
+            orderType: "Ask",
+            price: 0,
+            Quantity: 0,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.log(error);
+      res.send({ status: "fail", message: error.message });
+    }
+  },
+  viewBid: async (req, res) => {
+    // Bid=Buyer Ask=seller
+    try {
+      // let  gerBuyOrders=await limitOrder.findOne({orderType: "Bid"}).sort({price:"descending"})
+      let gerSellOrders = await limitOrder
+        .find({ orderType: "Bid" })
+        .sort({ price: "descending" });
+
+      if (gerSellOrders.length != 0) {
+        return res.send(gerSellOrders);
+      } else {
+        // return res.send({message:"NO data FOund"})
+        return res.send([
+          {
+            orderType: "Bid",
+            price: 0,
+            Quantity: 0,
+          },
+        ]);
+      }
     } catch (error) {
       console.log(error);
       res.send({ status: "fail", message: error.message });
@@ -283,6 +355,4 @@ module.exports = {
   MatchOrder: async (req, res) => {
     console.log("buying calling");
   },
-  
-  
 };

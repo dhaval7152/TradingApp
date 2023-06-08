@@ -19,7 +19,6 @@ const stockSchema = new Schema({
   },
   Listing_Quantity: {
     type: Number,
-    required: true,
   },
   Quantity: {
     type: Number,

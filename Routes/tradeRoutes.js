@@ -10,6 +10,8 @@ router.post("/sellStock", tradeContoller.sellStock);
 router.post("/limitOrder", tradeContoller.limitOrder);
 router.post("/viewOrder", tradeContoller.viewOrder);
 router.post("/MatchOrder", tradeContoller.MatchOrder);
+router.post("/viewAsk", tradeContoller.viewAsk);
+router.post("/viewBid", tradeContoller.viewBid);
 
 
 module.exports = router;

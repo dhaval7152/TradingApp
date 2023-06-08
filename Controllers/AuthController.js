@@ -1,5 +1,6 @@
 require("dotenv").config();
 const userModal = require("../Models/User");
+const walletModel = require("../Models/Wallet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -43,7 +44,10 @@ exports.registerUser = async (req, res) => {
       email: email,
       balance: balance,
     });
+
     const savedUser = await newUser.save();
+    const newWallet=new walletModel({username:savedUser.username,deposit:0})
+    const savenewWall = await newWallet.save();
     res.status(201).json(savedUser);
   } catch (error) {
     return errorMessage(res, error);
@@ -119,6 +123,11 @@ exports.updateProfile = async (req, res) => {
   let { username, name, upi } = req.body;
   try {
   let update = await userModal.findOneAndUpdate(
+    { username: username },
+    { name: name, upi: upi },
+    { new: true }
+  );
+  let updateWallet = await walletModel.findOneAndUpdate(
     { username: username },
     { name: name, upi: upi },
     { new: true }

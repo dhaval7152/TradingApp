@@ -27,11 +27,11 @@ const userSchema = new Schema({
     lowercase: true,
   },
   // age: Number,
-  // email: {
-  //   type:String,
-  //   unique:true,
-  //   required:true
-  // },
+  email: {
+    type:String,
+    unique:true,
+    // required:true
+  },
   upi: String,
   balance:{
     type:Number,

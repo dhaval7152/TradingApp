@@ -34,23 +34,23 @@ app.post("/send", async (req, res) => {
 });
 
 // setInterval(() => {
-  const updatePrice = async (newPrice) => {
-        const response = await fetch(`http://localhost:${port}/updatePrice`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-          "coinsyml":"xrp",
-          "price":newPrice
-          }),
-        });
-        const price =await response.json();
-        console.log("🚀 -------------------------------🚀")
-        console.log("🚀 ~ updatePrice ~ price:", price)
-        console.log("🚀 -------------------------------🚀")
+  // const updatePrice = async (newPrice) => {
+  //       const response = await fetch(`http://localhost:${port}/updatePrice`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //         "coinsyml":"xrp",
+  //         "price":newPrice
+  //         }),
+  //       });
+  //       const price =await response.json();
+  //       console.log("🚀 -------------------------------🚀")
+  //       console.log("🚀 ~ updatePrice ~ price:", price)
+  //       console.log("🚀 -------------------------------🚀")
 
-  };
+  // };
 //   console.log("price change");
 
 //  const stockTracker = async () => {
@@ -116,52 +116,52 @@ app.post("/send", async (req, res) => {
 // // Example usage: increasing the quantity by 500
 
 // }, 3000);
-setInterval(
-  async () => {
-    let Pricevalue = Math.floor(Math.random() * (300 - 250 + 1)) + 250;
-    insertAskBid = async () => {
-      console.log("🚀 -----------------------------------------🚀");
-      console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
-      console.log("🚀 -----------------------------------------🚀");
-      const response = await fetch(`http://localhost:${port}/limitOrder`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderType: "Ask",
-          coinsyml: "xrp",
-          price: Pricevalue,
-        }),
-      });
-      const price = await response.json();
-    };
-    insertBid = async () => {
-      console.log("🚀 -----------------------------------------🚀");
-      console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
-      console.log("🚀 -----------------------------------------🚀");
-      const response = await fetch(`http://localhost:${port}/limitOrder`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderType: "Bid",
-          coinsyml: "xrp",
-          price: Pricevalue,
-        }),
-      });
-      const price = await response.json();
-    };
+// setInterval(
+//   async () => {
+//     let Pricevalue = Math.floor(Math.random() * (300 - 250 + 1)) + 250;
+//     insertAskBid = async () => {
+//       console.log("🚀 -----------------------------------------🚀");
+//       console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
+//       console.log("🚀 -----------------------------------------🚀");
+//       const response = await fetch(`http://localhost:${port}/limitOrder`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           orderType: "Ask",
+//           coinsyml: "xrp",
+//           price: Pricevalue,
+//         }),
+//       });
+//       const price = await response.json();
+//     };
+//     insertBid = async () => {
+//       console.log("🚀 -----------------------------------------🚀");
+//       console.log("🚀 ~ setInterval ~ Pricevalue:", Pricevalue);
+//       console.log("🚀 -----------------------------------------🚀");
+//       const response = await fetch(`http://localhost:${port}/limitOrder`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           orderType: "Bid",
+//           coinsyml: "xrp",
+//           price: Pricevalue,
+//         }),
+//       });
+//       const price = await response.json();
+//     };
     // Pricevalue -= 1;
 
     // insertAskBid()
     // insertBid()
-  },
+//   },
 
-  200
-);
-setInterval(() => {
+//   200
+// );
+// setInterval(() => {
   const askBid = async () => {
     const response = await fetch(`http://localhost:${port}/viewOrder`, {
       method: "POST",
@@ -173,10 +173,10 @@ setInterval(() => {
     console.log("🚀 -------------------------------🚀");
     console.log("🚀 ~ setInterval ~ price:", price);
     console.log("🚀 -------------------------------🚀");
-    updatePrice(price.newPrice)
+    // updatePrice(price.newPrice)
   };  
   // askBid()
-}, 1900);
+// }, 1900);
 
 app.listen(port, () => {
   console.log(`Backend http://localhost:${port}`);

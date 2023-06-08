@@ -5,7 +5,8 @@ const porfolioModel = require("../Models/portfolio");
 const userModel = require("../Models/User");
 const limitOrder = require("../Models/LimitOrders");
 
-const host = "http://localhost:5000";
+// const host = "http://localhost:5000";
+const host = "http://192.168.29.220:5000";
 const buyStockApi = async (data) => {
   console.log("calling buyStockApi");
   console.log(data.Amount);
@@ -243,59 +244,82 @@ module.exports = {
       res.send({ status: "fail", message: error.message });
     }
   },
-  viewOrder: async (req, res) => {
+  askBid: async (req, res) => {
+    console.log("hitting askBid from backend");
     // Bid=Buyer Ask=seller
     try {
       let gerBuyOrders = await limitOrder
         .findOne({ orderType: "Bid" })
         .sort({ price: "descending" });
+
       let gerSellOrders = await limitOrder
         .findOne({ orderType: "Ask" })
         .sort({ price: "descending" });
 
-      if (gerBuyOrders.price === gerSellOrders.price) {
-        console.log("order match");
-        console.log("set new price", gerBuyOrders.price);
-
-        // delete
-        //  let placeBuy=await limitOrder.findOneAndDelete({price:gerBuyOrders.price})
-        //  let placeSell=await limitOrder.findOneAndDelete({price:gerSellOrders.price})
-
-        //  update quntity
-        let findBuy = await limitOrder.findOne({
-          orderType: gerBuyOrders.orderType,
-        });
-        let findSell = await limitOrder.findOne({
-          orderType: gerSellOrders.orderType,
-        });
-
-        // buyStockApi({username:"jay",coinsyml:findBuy.coinsyml,Amount:findBuy.Quantity * findBuy.price  })
-
-        // // sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findSell.Quantity * findSell.price  })
-
-        // sellStockApi({username:"jay2",coinsyml:findSell.coinsyml,Amount:findBuy.Quantity * findBuy.price   })
-
-        // updatePrice(findBuy.price)
-
-        let placeBuy = await limitOrder.findOneAndUpdate(
-          { orderType: gerBuyOrders.orderType },
-          { Quantity: findBuy.Quantity - findBuy.Quantity },
-          { new: true }
-        );
-
-        let placeSell = await limitOrder.findOneAndUpdate(
-          { orderType: gerSellOrders.orderType },
-          { Quantity: findSell.Quantity - findBuy.Quantity },
-          { new: true }
-        );
-
-        let BidfindDelete = await limitOrder
-          .findOne({ Quantity: 0 })
-          .deleteMany();
-
-        return res.send({ newPrice: gerBuyOrders.price });
+      if (gerBuyOrders === null && gerSellOrders === null) {
+        console.log("No data Found");
+        return res.send({ msg: "Not data Found" });
       } else {
-        return res.send({ status: "NO matched" });
+        // console.log("test gerSellOrders", gerSellOrders);
+        // console.log("test else");
+        if (gerBuyOrders == null || gerSellOrders == null) {
+          res.send("Do nothing gerBuyOrders==null");
+        } else {
+          console.log(gerBuyOrders.price);
+          console.log(gerSellOrders.price);
+          // res.send("Match orders")
+
+          if (gerBuyOrders.price === gerSellOrders.price) {
+            console.log("order match");
+            console.log("set new price", gerBuyOrders.price);
+
+            // delete
+            //  let placeBuy=await limitOrder.findOneAndDelete({price:gerBuyOrders.price})
+            //  let placeSell=await limitOrder.findOneAndDelete({price:gerSellOrders.price})
+
+            //  update quntity
+            let findBuy = await limitOrder.findOne({
+              orderType: gerBuyOrders.orderType,
+            });
+            let findSell = await limitOrder.findOne({
+              orderType: gerSellOrders.orderType,
+            });
+
+            buyStockApi({
+              username: findBuy.username,
+              coinsyml: findBuy.coinsyml,
+              Amount: findBuy.Quantity * findBuy.price,
+            });
+
+            sellStockApi({
+              username: findSell.username,
+              coinsyml: findSell.coinsyml,
+              Amount: findBuy.Quantity * findBuy.price,
+            });
+
+            updatePrice(findBuy.price);
+
+            let placeBuy = await limitOrder.findOneAndUpdate(
+              { orderType: gerBuyOrders.orderType },
+              { Quantity: findBuy.Quantity - findBuy.Quantity },
+              { new: true }
+            );
+
+            let placeSell = await limitOrder.findOneAndUpdate(
+              { orderType: gerSellOrders.orderType },
+              { Quantity: findSell.Quantity - findBuy.Quantity },
+              { new: true }
+            );
+
+            let BidfindDelete = await limitOrder
+              .findOne({ Quantity: 0 })
+              .deleteMany();
+
+            return res.send({ newPrice: gerBuyOrders.price });
+          } else {
+            return res.send({ status: "No Orders matched" });
+          }
+        }
       }
     } catch (error) {
       console.log(error);
@@ -352,7 +376,5 @@ module.exports = {
       res.send({ status: "fail", message: error.message });
     }
   },
-  MatchOrder: async (req, res) => {
-    console.log("buying calling");
-  },
+  
 };

@@ -10,6 +10,7 @@ const tradeRoute = require("./Routes/tradeRoutes");
 const portfolioRoute = require("./Routes/portfolioRoutes");
 const app = express();
 const port = process.env.port || 2000;
+const url = process.env.url || "http://localhost:";
 db();
 
 const cors = require("cors");
@@ -179,7 +180,8 @@ app.post("/send", async (req, res) => {
 // }, 1900);
 
 app.listen(port, () => {
-  console.log(`Backend http://localhost:${port}`);
+  // console.log(`Backend http://localhost:${port}`);
+  console.log(`Backend ${url}${port}`);
 });
 
 // function adjustPrice(listQunt, quantityChange) {

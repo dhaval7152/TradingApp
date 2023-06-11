@@ -7,6 +7,8 @@ const userModel = require("../Models/User");
 module.exports = {
   viewPortfolio: async (req, res) => {
     let {username}=req.body;
+
+    try {
     let viewAll = await porfolioModel.find({username:username});
     if(viewAll.length > 0){
       return res.send(viewAll);
@@ -14,6 +16,9 @@ module.exports = {
     else{
       return res.send({status:"failed", message: "No Stocks found" })
     }
+  } catch (error) {
+      
+  }
   },
  
 };

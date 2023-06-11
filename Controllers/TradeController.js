@@ -24,8 +24,8 @@ const buyStockApi = async (data) => {
   console.log("🚀 -------------------🚀");
 
   if (res.status === "failed") {
-    // alert(res.msg)
-    console.log("res.msg");
+    // alert(res.message)
+    console.log("res.message");
 
     // setUsernameError(res.message);
     // setPasswordError(res.message);
@@ -83,17 +83,26 @@ const updatePrice = async (newPrice) => {
 };
 module.exports = {
   viewStocks: async (req, res) => {
-    let view = await stockModel.find({});
-    res.send(view);
+    try {
+      let view = await stockModel.find({});
+      return res.send(view);
+      
+    } catch (error) {
+      console.log(error);
+      res.send({ status: "fail", message: error.message });
+    }
+   
   },
   buyStock: async (req, res) => {
+    try {
+    
     // condition: walllet balance decrease
     // quanity minus from stocks database
     let { username, coinsyml, Amount } = req.body;
     let stock = await stockModel.find({ coinsyml: coinsyml });
-    console.log("🚀 -----------------------------🚀");
-    console.log("🚀 ~ buyStock: ~ stock:", stock);
-    console.log("🚀 -----------------------------🚀");
+    // console.log("🚀 -----------------------------🚀");
+    // console.log("🚀 ~ buyStock: ~ stock:", stock);
+    // console.log("🚀 -----------------------------🚀");
     let wallet = await walletModel.find({ username: username });
 
 
@@ -119,19 +128,19 @@ module.exports = {
     // how to manage quantity then ,so if Listing Quantity==max supply stop trading
 
     if (wallet[0].deposit <= 0 || Amount > wallet[0].deposit) {
-      return res.send({ status: "failed", msg: "Please Add Funds" });
+      return res.send({ status: "failed", message: "Please Add Funds" });
     }
 
     // Use OG
     if (stock[0].Quantity < 0 || Amount / stock[0].price > stock[0].Quantity) {
-      return res.send({ status: "failed", msg: "All Stock Sold" });
+      return res.send({ status: "failed", message: "All Stock Sold" });
     } else if (portfolioCheck.length > 0) {
       // console.log("matched");
       updateBalance(Amount);
       // console.log("portfolioCheck.length > 0");
 
       let buyUpdate = await porfolioModel.findOneAndUpdate(
-        { username: username },
+        { username: username,coinsyml:coinsyml },
         {
           buyPrice: stock[0].price, //avg
           Quantity: portfolioCheck[0].Quantity + Amount / stock[0].price,
@@ -155,7 +164,7 @@ module.exports = {
       console.log("🚀 ~ newbuyUpdate.Quantity:", newbuyUpdate.Quantity);
       console.log("🚀 -------------------------------------------🚀");
       // return res.send({test:"test"})
-      return res.send(newbuyUpdate);
+      return res.send({status:"success",message:"Stock Added Succefully!",newbuyUpdate});
     } else {
       updateBalance(Amount);
 
@@ -169,7 +178,12 @@ module.exports = {
       let newSaved = await newportfolio.save();
       updateStock(newSaved.Quantity);
 
-      return res.send(newSaved);
+      return res.send({status:"success",message:"Stock Buyed Succefully!",newSaved});
+    }
+    }
+    catch (error) {
+      console.log(error);
+      res.send({ status: "fail", message: error.message });
     }
   },
   sellStock: async (req, res) => {
@@ -177,12 +191,13 @@ module.exports = {
     // quanity plus to stocks
 
     let { username, coinsyml, Amount } = req.body;
+    try {
 
     let stock = await stockModel.find({ coinsyml: coinsyml });
 
     let wallet = await walletModel.find({ username: username });
 
-    let portfolioCheck = await porfolioModel.find({ username: username });
+    let portfolioCheck = await porfolioModel.find({ username: username,coinsyml:coinsyml });
 
     const updateBalance = async (amountPlus) => {
       let update = await walletModel.findOneAndUpdate(
@@ -202,15 +217,14 @@ module.exports = {
     //  if (portfolioCheck[0].Quantity == 0) {
     //   return res.send({ status: "failed", message: "No Quantity Left" });
     // }
-    try {
       if (Amount / stock[0].price > portfolioCheck[0].Quantity) {
         return res.send({ status: "failed", message: "No Quantity Left" });
       } else if (portfolioCheck.length > 0 && portfolioCheck[0].Quantity > 0) {
-        updateBalance(Amount);
+        // updateBalance(Amount);
         // console.log("matched");
 
         let sellUpdate = await porfolioModel.findOneAndUpdate(
-          { username: username },
+          { username: username,coinsyml:coinsyml },
           {
             Quantity: portfolioCheck[0].Quantity - Amount / stock[0].price,
             value:
@@ -222,14 +236,16 @@ module.exports = {
 
         let newsellUpdate = await sellUpdate.save();
         updateStock(Amount / stock[0].price);
+        // updateStock(Amount / stock[0].price);
+        updateBalance(Amount / stock[0].price);
+
+         console.log("user wallet update", Amount / stock[0].price);
         console.log("🚀 -------------------------------------------🚀");
         console.log("🚀 ~ buyStock: ~ newbuyUpdate:", newsellUpdate);
         console.log("🚀 -------------------------------------------🚀");
-        return res.send(newsellUpdate);
+        return res.send({ status: "success",message:`${stock[0].CoinkName} Quantity ${Amount / stock[0].price} Sold Succefully`,newsellUpdate});
       }
-      // else if (portfolioCheck[0].Quantity == 0) {
-      //   return res.send({ status: "failed", message: "No Quantity Left" });
-      // }
+      
       else {
         res.send({ status: "failed", message: "Stock not found" });
       }
@@ -242,15 +258,30 @@ module.exports = {
   limitOrder: async (req, res) => {
     // set orderType in handlebuy and sell
     let data = req.body;
+    console.log("limitOrder",data);
 
     try {
+      if(data.orderType==="Bid"){
       
+        let createOrder = new limitOrder(data);
+        let newcreateOrder = await createOrder.save();
+        return res.send(newcreateOrder);
+      }
       let portfolioCheck = await porfolioModel.find({
         username: data.username,
         coinsyml: data.coinsyml,
       });
+      console.log("🚀 -------------------------------------------------🚀")
+      console.log("🚀 ~ limitOrder: ~ portfolioCheck:", portfolioCheck)
+      console.log("🚀 -------------------------------------------------🚀")
      console.log("portfolioCheck",portfolioCheck);
-      if(!portfolioCheck.length===0){
+     if(portfolioCheck.length===0){
+      return res.send({
+        status: "fail",
+        message: "You Don't Have any stocks To Ask",
+      });
+     }
+    if(!portfolioCheck.length===0){
       if (data.Quantity > portfolioCheck[0].Quantity) {
         return res.send({
           status: "fail",
@@ -258,9 +289,12 @@ module.exports = {
         });
       }
     }
-    let createOrder = new limitOrder(data);
-    let newcreateOrder = await createOrder.save();
-    res.send(newcreateOrder);
+    else{
+
+      let createOrder = new limitOrder(data);
+      let newcreateOrder = await createOrder.save();
+      return res.send(newcreateOrder);
+    }
 
 
     } catch (error) {
@@ -268,28 +302,39 @@ module.exports = {
     }
   },
   askBid: async (req, res) => {
-
+    let {coinsyml} = req.body;
+    let data = req.body;
+    console.log("🚀 ---------------------------------🚀")
+    console.log("🚀 ~ askBid: ~ data:", data)
+    console.log("🚀 ---------------------------------🚀")
 
     console.log("hitting askBid from backend");
     // Bid=Buyer Ask=seller
     try {
       let gerBuyOrders = await limitOrder
-        .findOne({ orderType: "Bid" })
+        .findOne({ orderType: "Bid",coinsyml:coinsyml })
         .sort({ price: "descending" });
+      console.log("🚀 -----------------------------------------🚀")
+      console.log("🚀 ~ askBid: ~ gerBuyOrders:", gerBuyOrders)
+      console.log("🚀 -----------------------------------------🚀")
+
    
       let gerSellOrders = await limitOrder
-        .findOne({ orderType: "Ask" })
+        .findOne({ orderType: "Ask",coinsyml:coinsyml })
         .sort({ price: "descending" });
+      console.log("🚀 -------------------------------------------🚀")
+      console.log("🚀 ~ askBid: ~ gerSellOrders:", gerSellOrders)
+      console.log("🚀 -------------------------------------------🚀")
       
 
       if (gerBuyOrders === null && gerSellOrders === null) {
-        console.log("No data Found");
-        return res.send({ status: "fail", message: "Not data Found" });
+        console.log("Ask And Bid data not Found");
+        return res.send({ status: "fail", message: "Ask And Bid data not Found" });
       } else {
         
         if (gerBuyOrders == null || gerSellOrders == null) {
           
-          return res.send({ status: "fail", message: "Orders Not Matched" });
+          return res.send({ status: "fail", message: "Added to Bid,Orders Not Matched" });
         } else {
           if (gerBuyOrders.price === gerSellOrders.price) {
             console.log("order match", {
@@ -348,8 +393,8 @@ module.exports = {
 
             // return res.send({ newPrice: gerBuyOrders.price });
             return res.send({
-              status: "Orders matched From(if) Same Price",
-              sell: placeSell.Quantity,
+              status:"success",
+              message: "Orders matched From(if) Same Price"
             });
           } else {
             let findBuy2 = await limitOrder
@@ -357,6 +402,9 @@ module.exports = {
                 orderType: gerBuyOrders.orderType,
               })
               .sort({ price: "descending" });
+            console.log("🚀 ---------------------------------🚀")
+            console.log("🚀 ~ askBid: ~ findBuy2:", findBuy2)
+            console.log("🚀 ---------------------------------🚀")
 
             let findSell2 = await limitOrder
               .findOne({
@@ -403,17 +451,19 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "fail", message: error.message });
+      res.send({ status: "failAs", message: error.message });
     }
   },
   viewAsk: async (req, res) => {
+    let {coinsyml} =req.body;
+    // console.log("ask Hit value",coinsyml);
 // will take coin name with params
 
     // Bid=Buyer Ask=seller
     try {
       // let  gerBuyOrders=await limitOrder.findOne({orderType: "Bid"}).sort({price:"descending"})
       let gerSellOrders = await limitOrder
-        .find({ orderType: "Ask" })
+        .find({ orderType: "Ask",coinsyml:coinsyml })
         .sort({ price: "descending" });
 
       if (gerSellOrders.length != 0) {
@@ -434,13 +484,17 @@ module.exports = {
     }
   },
   viewBid: async (req, res) => {
+    let {coinsyml} =req.body;
+    // console.log("Bid Hit value",coinsyml);
+
+
 // will take coin name with params
 
     // Bid=Buyer Ask=seller
     try {
       // let  gerBuyOrders=await limitOrder.findOne({orderType: "Bid"}).sort({price:"descending"})
       let gerSellOrders = await limitOrder
-        .find({ orderType: "Bid" })
+        .find({ orderType: "Bid" ,coinsyml:coinsyml})
         .sort({ price: "descending" });
 
       if (gerSellOrders.length != 0) {

@@ -10,6 +10,10 @@ const host = process.env.host;
 const buyStockApi = async (data) => {
   console.log("calling buyStockApi");
   console.log(data.Amount);
+  let buy={
+    username:data.username,
+    
+  }
   const response = await fetch(`${host}/buyStock`, {
     method: "POST",
     headers: {
@@ -20,7 +24,7 @@ const buyStockApi = async (data) => {
   });
   const res = await response.json();
   console.log("🚀 -------------------🚀");
-  console.log("🚀 ~ buy ~ res:", res);
+  console.log("🚀 ~ buyStockApi ~ res:", res);
   console.log("🚀 -------------------🚀");
 
   if (res.status === "failed") {
@@ -50,7 +54,7 @@ const sellStockApi = async (data) => {
   });
   const res = await response.json();
   console.log("🚀 -------------------🚀");
-  console.log("🚀 ~ buy ~ res:", res);
+  console.log("🚀 ~ sellStockApi ~ res:", res);
   console.log("🚀 -------------------🚀");
 
   if (res.status === "failed") {
@@ -58,10 +62,8 @@ const sellStockApi = async (data) => {
     // setUsernameError(res.message);
     // setPasswordError(res.message);
   } else {
-    console.log("sold");
-    // setUserData(res);
-    // localStorage.setItem("auth-token", res.token);
-    // navigate("/");
+    // console.log("sold");
+    console.log(res.message);
   }
 };
 
@@ -143,13 +145,15 @@ module.exports = {
         { username: username,coinsyml:coinsyml },
         {
           buyPrice: stock[0].price, //avg
-          Quantity: portfolioCheck[0].Quantity + Amount / stock[0].price,
+          Quantity: portfolioCheck[0].Quantity + (Amount / stock[0].price),
+          // Quantity:  Amount / stock[0].price,
           value:
             portfolioCheck[0].value +
             (Amount / stock[0].price) * stock[0].price,
         },
         { new: true }
       );
+      console.log("Jay Quntity",portfolioCheck[0].Quantity + (Amount / stock[0].price));
       console.log("🚀 -------------------------------------🚀")
       console.log("🚀 ~ buyStock: ~ buyUpdate:", buyUpdate)
       console.log("🚀 -------------------------------------🚀")
@@ -241,7 +245,7 @@ module.exports = {
 
          console.log("user wallet update", Amount / stock[0].price);
         console.log("🚀 -------------------------------------------🚀");
-        console.log("🚀 ~ buyStock: ~ newbuyUpdate:", newsellUpdate);
+        console.log("🚀 ~ sellStock: ~ newbuyUpdate:", newsellUpdate);
         console.log("🚀 -------------------------------------------🚀");
         return res.send({ status: "success",message:`${stock[0].CoinkName} Quantity ${Amount / stock[0].price} Sold Succefully`,newsellUpdate});
       }
@@ -364,6 +368,7 @@ module.exports = {
               coinsyml: findBuy.coinsyml,
               Amount: findBuy.Quantity * findBuy.price,
             });
+            console.log("QuntityBuy",findBuy.Quantity * findBuy.price)
 
             sellStockApi({
               username: findSell.username,
@@ -391,7 +396,6 @@ module.exports = {
               .find({ Quantity: 0 })
               .deleteMany();
 
-            // return res.send({ newPrice: gerBuyOrders.price });
             return res.send({
               status:"success",
               message: "Orders matched From(if) Same Price"

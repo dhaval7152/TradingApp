@@ -55,6 +55,22 @@ module.exports = {
 
    
   },
+  viewCoin: async (req, res) => {
+    let {coinsyml} = req.body;
+    try {
+      const Qunt = await stockController.findOne({coinsyml:coinsyml})
+      console.log("🚀 ---------------------------🚀")
+      console.log("🚀 ~ viewCoin: ~ Qunt:", Qunt)
+      console.log("🚀 ---------------------------🚀")
+      return res.send(Qunt)
+    } catch (error) {
+      return res.send({ status: "fail", message: error.message })
+      
+    }
+  
+
+   
+  },
   fetchStockData: async (req, res) => {
     let {coinsyml} = req.body;
     const coin = await stockController.findOne({coinsyml:coinsyml})

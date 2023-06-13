@@ -5,7 +5,7 @@ const porfolioModel = require("../Models/portfolio");
 const userModel = require("../Models/User");
 
 module.exports = {
-  viewPortfolio: async (req, res) => {
+  viewPortfolio: async (req, res) => {  
     let {username}=req.body;
 
     try {

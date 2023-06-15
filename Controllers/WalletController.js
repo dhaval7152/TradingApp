@@ -1,6 +1,7 @@
 require("dotenv").config();
 const userModel = require("../Models/User");
 const walletModel = require("../Models/Wallet");
+const portfolio = require("../Models/portfolio");
 module.exports = {
   deposit: async (req, res) => {
     let data = req.body;
@@ -112,4 +113,6 @@ module.exports = {
       res.send({ status: "fail", message: error.message });
     }
   },
+
+ 
 };

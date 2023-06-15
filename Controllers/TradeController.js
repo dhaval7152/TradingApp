@@ -112,6 +112,23 @@ module.exports = {
         );
       };
 
+      const averagePrice= async(shareBought,buyPrice)=>{
+        let existingShare=await porfolioModel.findOne({username: username,coinsyml:coinsyml})
+        let totalBuy=existingShare.Quantity+shareBought;
+        console.log("🚀 ----------------------------------------🚀")
+        console.log("🚀 ~ //averagePrice ~ totalBuy:", totalBuy)
+        console.log("🚀 ----------------------------------------🚀")
+        let amountBought=existingShare.Quantity * existingShare.buyPrice + shareBought * buyPrice;
+        console.log("🚀 ------------------------------------------------🚀")
+        console.log("🚀 ~ //averagePrice ~ amountBought:", amountBought)
+        console.log("🚀 ------------------------------------------------🚀")
+        let avgPrice= amountBought / totalBuy;
+        console.log("🚀 ----------------------------------------🚀")
+        console.log("🚀 ~ //averagePrice ~ avgPrice:", avgPrice)
+        console.log("🚀 ----------------------------------------🚀")
+
+      }
+
       if (wallet[0].deposit <= 0 || Amount > wallet[0].deposit) {
         return res.send({
           status: "failed",
@@ -128,6 +145,8 @@ module.exports = {
           return res.send({ status: "failed", message: "All Stock Sold" });
         }
       } else if (portfolioCheck.length > 0) {
+        averagePrice( Amount / stock[0].price, stock[0].price)
+
         let buyUpdate = await porfolioModel.findOneAndUpdate(
           { username: username, coinsyml: coinsyml },
           {
@@ -139,6 +158,7 @@ module.exports = {
           },
           { new: true }
         );
+
         updateBalance(Amount);
 
         // console.log(
@@ -390,6 +410,11 @@ module.exports = {
             console.log("findBuy", findBuy.price);
             console.log("findSell", findSell.price);
 
+            updatePrice({
+              coinsyml: findBuy.coinsyml,
+              newprice: findBuy.price,
+            });
+
             buyStockApi({
               username: findBuy.username,
               coinsyml: findBuy.coinsyml,
@@ -405,10 +430,10 @@ module.exports = {
               orderType: findSell.orderType,
             });
 
-            updatePrice({
-              coinsyml: findBuy.coinsyml,
-              newprice: findBuy.price,
-            });
+            // updatePrice({
+            //   coinsyml: findBuy.coinsyml,
+            //   newprice: findBuy.price,
+            // });
 
             let placeBuy = await limitOrder.findOneAndUpdate(
               { orderType: gerBuyOrders.orderType },
@@ -453,6 +478,11 @@ module.exports = {
 
             console.log("findBuy", findBuy2.price);
             console.log("findSell", findSell2.price);
+            
+            updatePrice({
+              coinsyml: findBuy2.coinsyml,
+              newprice: findBuy2.price,
+            });
 
             buyStockApi({
               username: findBuy2.username,
@@ -468,10 +498,10 @@ module.exports = {
               orderType: findSell2.orderType,
             });
 
-            updatePrice({
-              coinsyml: findBuy2.coinsyml,
-              newprice: findBuy2.price,
-            });
+            // updatePrice({
+            //   coinsyml: findBuy2.coinsyml,
+            //   newprice: findBuy2.price,
+            // });
 
             let placeBuy = await limitOrder.findOneAndUpdate(
               { orderType: gerBuyOrders.orderType },
@@ -607,7 +637,7 @@ module.exports = {
         );
       };
      
-      if (porfolioModel[0].Quantity <= 0 || Amount > porfolioModel[0].Quantity) {
+      if (portfolioCheck[0].Quantity <= 0 || Amount > portfolioCheck[0].Quantity) {
         return res.send({
           status: "failed",
           message: `Insufficient ${Fromcoinsyml} ! Please Add Funds`,
@@ -632,7 +662,7 @@ module.exports = {
           status: "success",
           message: `Stock Swap Qunt:${Amount / ToPrice} Succefully!`,
 
-          newbuyUpdate,
+          swapUpdate,
         });
       }
       else {

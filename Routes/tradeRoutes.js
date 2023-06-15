@@ -11,6 +11,8 @@ router.post("/limitOrder", tradeContoller.limitOrder);
 router.post("/askBid", tradeContoller.askBid);
 router.post("/viewAsk", tradeContoller.viewAsk);
 router.post("/viewBid", tradeContoller.viewBid);
+router.post("/getBtcBalance", tradeContoller.getBtcBalance);
+router.post("/swapBuy", tradeContoller.swapBuy);
 
 
 module.exports = router;

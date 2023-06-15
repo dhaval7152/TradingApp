@@ -10,7 +10,7 @@ module.exports = {
     try {
       let addStock = new stockController(data);
       let newStock = await addStock.save();
-      res.send(newStock);
+      res.send({ status: "success", message: `${newStock.CoinkName} Listed Succefully` });
     } catch (error) {
       res.send({ status: "fail", message: error.message });
     }

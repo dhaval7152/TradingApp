@@ -1,0 +1,15 @@
+	(d0ne)token transfer 10% tax  
+(d0ne)minting methods - 1 ether=10 mil token genrate
+(d0ne)burn 10 mil ,1 ether return 
+(d0ne)no tax in mint and burn
+
+(d0ne)exempted accounts no tax for them
+(d0ne)token supply 200 mil(20 ETH)
+(d0ne)MIN INVEST IS 0.1 ETH , max 2 ether for an account
+
+_beforeTokenTransfer hook - (remaining  Implement)
+
+
+
+
+

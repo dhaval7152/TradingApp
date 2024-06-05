@@ -31,6 +31,7 @@ module.exports = {
       res.send({ status: "fail", message: error.message });
     }
   },
+  // Not in use
   stockTracker: async (req, res) => {
     let {coinsyml} = req.body;
     const Qunt = await stockController.findOne({coinsyml:coinsyml})
@@ -71,6 +72,7 @@ module.exports = {
 
    
   },
+  // Not in use
   fetchStockData: async (req, res) => {
     let {coinsyml} = req.body;
     const coin = await stockController.findOne({coinsyml:coinsyml})
